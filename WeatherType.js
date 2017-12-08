@@ -12,8 +12,9 @@ const weatherType = new GraphQLObjectType({
     cod: { type: GraphQLString },
     message: { type: GraphQLFloat },
     cnt: { type: GraphQLInt },
-    city: { type: CityType },
     list: {type: new GraphQLList(ListType)},
+    city: { type: CityType },
+    // custom methods
     fahrenheit_avg: {
       type: GraphQLFloat,
       resolve: obj => toFarenheit(avg(obj.list.map(weather => weather.main.temp), obj.list.length))
@@ -26,13 +27,29 @@ const weatherType = new GraphQLObjectType({
       type: GraphQLFloat,
       resolve: obj => toKelvin(avg(obj.list.map(weather => weather.main.temp), obj.list.length))
     },
+    fahrenheit_max_avg: {
+      type: GraphQLFloat,
+      resolve: obj => toFarenheit(avg(obj.list.map(weather => weather.main.temp_max), obj.list.length))
+    },
+    celcius_max_avg: {
+      type: GraphQLFloat,
+      resolve: obj => toCelsius(avg(obj.list.map(weather => weather.main.temp_max), obj.list.length))
+    },
+    kelvin_max_avg: {
+      type: GraphQLFloat,
+      resolve: obj => toKelvin(avg(obj.list.map(weather => weather.main.temp_max), obj.list.length))
+    },
     pressure_avg: {
       type: GraphQLFloat,
       resolve: obj => avg(obj.list.map(weather => weather.main.pressure), obj.list.length).toFixed(2)
     },
     humidity_avg: {
       type: GraphQLFloat,
-      resolve: obj => avg(obj, weather, weather.main.humidity).toFixed(2)
+      resolve: obj => avg(obj.list.map(weather => weather.main.humidity), obj.list.length).toFixed(2)
+    },
+    sea_level_avg: {
+      type: GraphQLFloat,
+      resolve: obj => avg(obj.list.map(weather => weather.main.sea_level), obj.list.length).toFixed(2)
     },
     pressure: {
       type: new GraphQLList(GraphQLFloat),
@@ -53,6 +70,10 @@ const weatherType = new GraphQLObjectType({
     temp_kelvin: {
       type: new GraphQLList(GraphQLFloat),
       resolve: obj => obj.list.map(weather => toKelvin(weather.main.temp))
+    },
+    sea_level: {
+      type: new GraphQLList(GraphQLFloat),
+      resolve: obj => obj.list.map(weather => toKelvin(weather.main.sea_level))
     },
   })
 });
@@ -80,21 +101,19 @@ const ListType = new GraphQLObjectType({
   name: "List",
   fields: () => ({
     dt: { type: GraphQLInt },
-    dt_txt: { type: GraphQLString },
     main: { type: MainType },
     weather: { type: new GraphQLList(WeatherListType) },
-    wind: { type: windType },
-    clouds: { type: cloudsType }
+    clouds: { type: CloudsType },
+    rain: { type: RainType },
+    wind: { type: WindType },
+    sys: { type: SysType },
+    dt_txt: { type: GraphQLString },
   }),
 });
 
 const MainType = new GraphQLObjectType({
   name: "Main",
   fields: () => ({
-    pressure: { type: GraphQLFloat },
-    sea_level: { type: GraphQLFloat },
-    grnd_level: { type: GraphQLFloat },
-    humidity: { type: GraphQLInt },
     temp: { type: GraphQLFloat },
     temp_min: { type: GraphQLFloat },
     temp_max: { type: GraphQLFloat },
@@ -103,10 +122,14 @@ const MainType = new GraphQLObjectType({
       type: GraphQLFloat,
       resolve: obj => toFarenheit(obj.temp)
     },
-    celcius: {
+    temp_c: {
       type: GraphQLFloat,
       resolve: obj => toCelsius(obj.temp)
     },
+    pressure: { type: GraphQLFloat },
+    sea_level: { type: GraphQLFloat },
+    grnd_level: { type: GraphQLFloat },
+    humidity: { type: GraphQLInt },
   }),
 });
 
@@ -120,7 +143,7 @@ const WeatherListType = new GraphQLObjectType({
   }),
 });
 
-const windType = new GraphQLObjectType({
+const WindType = new GraphQLObjectType({
   name: "Wind",
   fields: () => ({
     speed: { type: GraphQLFloat },
@@ -128,10 +151,26 @@ const windType = new GraphQLObjectType({
   }),
 });
 
-const cloudsType = new GraphQLObjectType({
+const CloudsType = new GraphQLObjectType({
   name: "Clouds",
   fields: () => ({
     all: { type: GraphQLInt },
+  }),
+});
+
+const SysType = new GraphQLObjectType({
+  name: "Sys",
+  fields: () => ({
+    // 3h: { type: GraphQLFloat },
+    pod: { type: GraphQLString },
+  }),
+});
+
+const RainType = new GraphQLObjectType({
+  name: "Rain",
+  fields: () => ({
+    // 3h: { type: GraphQLFloat },
+    h: { type: GraphQLFloat },
   }),
 });
 
