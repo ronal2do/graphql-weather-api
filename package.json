@@ -1,0 +1,43 @@
+{
+  "name": "graphql-weather-api",
+  "version": "1.0.0",
+  "description": "Small Plugin for GraphQL",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js --exec babel-node",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronal2do/graphql-weather-api.git"
+  },
+  "keywords": [
+    "graphql",
+    "tool",
+    "weather"
+  ],
+  "author": "@ronal2do",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ronal2do/graphql-weather-api/issues"
+  },
+  "homepage": "https://github.com/ronal2do/graphql-weather-api#readme",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "es6-promise": "^4.1.1",
+    "express": "^4.16.2",
+    "express-graphql": "^0.6.11",
+    "graphql": "^0.11.7",
+    "isomorphic-fetch": "^2.2.1",
+    "node-geocoder": "^3.21.1",
+    "nodemon": "^1.12.5",
+    "request": "^2.83.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0"
+  }
+}
